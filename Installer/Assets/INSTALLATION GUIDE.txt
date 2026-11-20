@@ -1,0 +1,66 @@
+=====================================================================
+  PRODUCT EXPIRY ALERT MANAGEMENT SYSTEM  -  INSTALLATION GUIDE
+=====================================================================
+
+SYSTEM REQUIREMENTS
+  - Windows 10 or Windows 11, 64-bit (Windows 8.1 / 7 SP1 64-bit also work)
+  - Microsoft .NET Framework 4.7.2 or newer
+      * Already built into Windows 10 (version 1803 or later) and Windows 11.
+      * On older PCs, Setup.exe installs it for you (internet needed).
+  - About 20 MB of disk space
+  - Administrator rights to install (normal users can then use it)
+  - NO database server is needed: SQLite is built into the program.
+
+
+WHICH FILE SHOULD I USE?
+
+  ProductExpiryAlertSystem-Setup-1.0.0.exe   <- RECOMMENDED
+      Checks for .NET Framework and installs it if missing,
+      then installs the program.
+
+  ProductExpiryAlertSystem-1.0.0.msi
+      The program only. Use it on PCs that already have .NET 4.7.2+
+      (every up-to-date Windows 10/11 PC), or for silent/network installs.
+
+
+HOW TO INSTALL
+  1. Copy the Setup .exe to the client PC (USB drive, email, etc.).
+  2. Double-click it. If Windows shows "Windows protected your PC",
+     click "More info" then "Run anyway" (the program is not signed
+     with a paid certificate - this is normal for student projects).
+  3. Tick "I agree to the license terms" and click Install.
+  4. Click "Yes" when Windows asks for permission.
+  5. When it finishes, open "Product Expiry Alert System" from the
+     Desktop or Start Menu.
+  6. Log in with  admin / admin123  and change the password
+     in Settings.
+
+
+WHAT GETS INSTALLED WHERE
+  Program files:  C:\Program Files\Product Expiry Alert Management System\
+  Database:       C:\ProgramData\ProductExpiryAlertSystem\expiry_alert.db
+  Shortcuts:      Desktop + Start Menu (program, user guide, uninstall)
+
+
+UPGRADING
+  Run the Setup file of the newer version. It replaces the old version
+  automatically. Your data is kept.
+
+
+UNINSTALLING
+  Start Menu > Product Expiry Alert System > Uninstall
+  (or Settings > Apps > Installed apps).
+  The database is NOT deleted. To remove all data as well, delete
+  C:\ProgramData\ProductExpiryAlertSystem after uninstalling.
+
+
+SILENT INSTALL (IT staff / many PCs)
+  msiexec /i ProductExpiryAlertSystem-1.0.0.msi /qn
+  ProductExpiryAlertSystem-Setup-1.0.0.exe /quiet
+
+
+MOVING TO A NEW COMPUTER
+  1. On the old PC: Settings > Backup Database (save to USB).
+  2. Install the program on the new PC and open it once, then close it.
+  3. Copy the backup file to C:\ProgramData\ProductExpiryAlertSystem\
+     and rename it to expiry_alert.db (replace the existing file).

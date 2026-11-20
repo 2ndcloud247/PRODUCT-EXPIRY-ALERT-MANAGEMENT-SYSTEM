@@ -56,9 +56,46 @@ Change this password after logging in: **Settings > Change my password**.
 On the first run, the system creates the database and adds **sample products** (some expired, some critical, some safe) so the alerts can be demonstrated straight away. You can edit or delete them.
 
 ### Requirements
-- Windows 10 or 11
+- Windows 10 or 11 (64-bit)
 - .NET Framework 4.7.2 or newer (already included in Windows 10/11)
 - No database server is needed. SQLite is built in.
+
+### Where the data is kept
+`C:\ProgramData\ProductExpiryAlertSystem\expiry_alert.db` (shared by all Windows users on the PC).
+The path is also shown in **Settings > Backup**.
+
+---
+
+## 2b. Installing on a client computer
+
+### Build the installer
+Double-click **`build-installer.bat`** in the main folder. It takes about a minute; the first run takes longer while it downloads the WiX toolkit from NuGet. The files appear in the **`Release`** folder:
+
+| File | Use |
+|---|---|
+| `ProductExpiryAlertSystem-Setup-1.0.0.exe` | **Give this to clients.** Installs .NET Framework 4.8 automatically if the PC lacks it (needs internet only in that case), then installs the program. |
+| `ProductExpiryAlertSystem-1.0.0.msi` | The program only, for PCs that already have .NET 4.7.2+ (all up-to-date Windows 10/11), or for silent installs: `msiexec /i ProductExpiryAlertSystem-1.0.0.msi /qn` |
+| `ProductExpiryAlertSystem-1.0.0.zip` | Everything above, plus the guides, in one file |
+| `INSTALLATION GUIDE.txt`, `User Guide.txt` | Instructions for the client |
+
+For a new version run `build-installer.bat 1.1.0` from a command prompt. Installing it upgrades the old version and keeps the data.
+
+### What the installer does
+- Installs to `C:\Program Files\Product Expiry Alert Management System\`
+- Creates `C:\ProgramData\ProductExpiryAlertSystem\` and lets all users write to it
+- Adds Desktop and Start Menu shortcuts (program, user guide, uninstall)
+- Registers the program in **Settings > Apps** for uninstalling. Uninstalling **keeps** the database.
+
+The installer is not code-signed, so Windows SmartScreen may warn "Windows protected your PC". Click **More info > Run anyway**.
+
+### Installer source files
+```
+build-installer.bat / .ps1     One-click build script
+Installer/
+├── Msi/Package.wxs            The .msi definition (files, folders, shortcuts, .NET check)
+├── Bundle/Bundle.wxs          Setup.exe definition (.NET Framework 4.8 + the .msi)
+└── Assets/                    Licence text, user guide, installation guide
+```
 
 ---
 
@@ -131,7 +168,7 @@ PRODUCT EXPIRY ALERT MANAGEMENT SYSTEM/
 
 ### 4.3 Database design (SQLite)
 
-The database is the single file **`expiry_alert.db`** next to the program (`bin\Debug\net472\`). You can open it with the free tool **DB Browser for SQLite**.
+The database is the single file **`expiry_alert.db`** in `C:\ProgramData\ProductExpiryAlertSystem\`. You can open it with the free tool **DB Browser for SQLite**.
 
 **Users**: `UserId` (PK), `Username` (unique), `FullName`, `PasswordHash`, `Role` (Admin/Staff), `IsActive`, `CreatedAt`
 

@@ -1,0 +1,61 @@
+=====================================================================
+  PRODUCT EXPIRY ALERT MANAGEMENT SYSTEM  -  QUICK USER GUIDE
+=====================================================================
+
+STARTING THE PROGRAM
+  Double-click "Product Expiry Alert System" on the Desktop,
+  or open it from the Start Menu.
+
+FIRST LOGIN
+  Username: admin
+  Password: admin123
+  Change this password right away: Settings > Change my password.
+
+  The first time it runs, the program adds some SAMPLE products so you
+  can see how the alerts work. Delete them (Products > select > Delete)
+  before you start entering your real stock.
+
+WHAT THE COLOURS MEAN
+  RED     Expired         - remove from sale now
+  ORANGE  Critical        - expires within 7 days
+  YELLOW  Expiring Soon   - expires within 30 days
+  GREEN   Safe            - more than 30 days left
+  (An Admin can change the 7 and 30 days in Settings.)
+
+DAILY USE
+  1. Add new stock:   Products > Add Product (enter the EXPIRY DATE).
+  2. Check alerts:    a pop-up appears when the program opens, and the
+                      red counter at the top shows pending alerts.
+  3. Act on alerts:   Alerts > select > Acknowledge (after you have
+                      moved, discounted or returned the item).
+  4. Expired items:   Products > select > Mark as Disposed.
+  5. Reports:         Reports > choose a report > Print or Export.
+
+  Keep the program open during the day: it checks again every 30
+  minutes and shows a Windows notification near the clock.
+
+ADDING STAFF
+  Log in as admin > Users > New > fill in the details > Save.
+  Staff can manage products, alerts and reports, but not users.
+
+YOUR DATA AND BACKUPS
+  All records are kept in one file:
+      C:\ProgramData\ProductExpiryAlertSystem\expiry_alert.db
+  Make a backup regularly: Settings > Backup Database
+  (save it to a USB drive or another computer).
+
+  Uninstalling the program does NOT delete this file.
+  To restore a backup: close the program, copy the backup file over
+  expiry_alert.db in the folder above, and rename it to expiry_alert.db.
+
+FORGOT THE ADMIN PASSWORD?
+  Ask another Admin to reset it from the Users screen.
+
+UNINSTALLING
+  Start Menu > Product Expiry Alert System > Uninstall,
+  or Windows Settings > Apps > Installed apps.
+
+---------------------------------------------------------------------
+Developed by Iderima Lawrentta Onosedeba (IAUE/2025/PGD/0029)
+PGD Information Technology, Department of Computer Science
+Ignatius Ajuru University of Education, Rumuolumini, Port Harcourt

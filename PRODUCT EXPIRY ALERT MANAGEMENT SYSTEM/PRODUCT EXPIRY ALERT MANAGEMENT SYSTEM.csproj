@@ -22,6 +22,8 @@
     <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
     <ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
+    <!-- Icon shown on the .exe, desktop shortcut and taskbar -->
+    <ApplicationIcon>app.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

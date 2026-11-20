@@ -1,0 +1,29 @@
+<!--
+  SETUP.EXE (bootstrapper)
+  Installs, in order:
+    1. Microsoft .NET Framework 4.8  - only if missing. Downloaded from Microsoft (needs internet)
+                                       and skipped automatically on Windows 10 (1903+) and Windows 11,
+                                       which already include it.
+    2. Product Expiry Alert Management System (.msi embedded inside this Setup.exe).
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
+
+  <Bundle Name="Product Expiry Alert Management System"
+          Manufacturer="Iderima Lawrentta Onosedeba"
+          Version="$(ProductVersion)"
+          UpgradeCode="5E0B5C1A-7D2E-4E8B-9C21-2C7F4B8E9A10"
+          IconSourceFile="$(IconFile)">
+
+    <BootstrapperApplication>
+      <bal:WixStandardBootstrapperApplication Theme="rtfLicense"
+                                              LicenseFile="$(AssetsDir)\License.rtf"
+                                              ShowVersion="yes" />
+    </BootstrapperApplication>
+
+    <Chain>
+      <PackageGroupRef Id="NetFx48Web" />
+      <MsiPackage SourceFile="$(MsiFile)" Vital="yes" />
+    </Chain>
+  </Bundle>
+</Wix>

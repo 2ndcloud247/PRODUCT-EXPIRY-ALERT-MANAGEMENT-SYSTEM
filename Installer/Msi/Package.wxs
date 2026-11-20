@@ -1,0 +1,121 @@
+<!--
+  WINDOWS INSTALLER (.msi) DEFINITION
+
+  What the installer does on the client PC:
+    1. Checks that .NET Framework 4.7.2 or newer is present (built into Windows 10 v1803+ and Windows 11).
+    2. Copies the program to   C:\Program Files\Product Expiry Alert Management System\
+    3. Creates the data folder C:\ProgramData\ProductExpiryAlertSystem\  and lets every Windows user
+       write to it (that is where the SQLite database file is kept).
+    4. Adds shortcuts on the Desktop and in the Start Menu.
+    5. Registers the program in "Apps / Add or Remove Programs" so it can be uninstalled.
+    6. Offers to start the program when it finishes.
+
+  Uninstalling removes the program but KEEPS the data folder, so no records are lost.
+  Installing a newer version upgrades the old one automatically (MajorUpgrade).
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+  <Package Name="Product Expiry Alert Management System"
+           Manufacturer="Iderima Lawrentta Onosedeba"
+           Version="$(ProductVersion)"
+           UpgradeCode="A220469F-329B-4F79-AF80-134DE901C4FE"
+           Scope="perMachine"
+           Compressed="yes">
+
+    <SummaryInformation Description="Product Expiry Alert Management System Setup" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed. Setup will now exit." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- ===== Prerequisite check: .NET Framework 4.7.2 (release number 461808) or newer ===== -->
+    <Property Id="NETFXRELEASE">
+      <RegistrySearch Id="NetFxRelease" Root="HKLM" Key="SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full" Name="Release" Type="raw" />
+    </Property>
+    <Launch Condition="Installed OR (NETFXRELEASE AND NETFXRELEASE &gt;= &quot;#461808&quot;)"
+            Message="This program needs Microsoft .NET Framework 4.7.2 or newer. Please run the Setup .exe instead, which installs .NET automatically." />
+
+    <!-- ===== Appearance in "Add or Remove Programs" ===== -->
+    <Icon Id="AppIcon" SourceFile="$(IconFile)" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon" />
+    <Property Id="ARPCOMMENTS" Value="Tracks product expiry dates and raises alerts. PGD IT project, Ignatius Ajuru University of Education." />
+    <Property Id="ARPCONTACT" Value="Iderima Lawrentta Onosedeba (IAUE/2025/PGD/0029)" />
+
+    <!-- ===== Folders ===== -->
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="Product Expiry Alert Management System" />
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="AppMenuFolder" Name="Product Expiry Alert System" />
+    </StandardDirectory>
+    <StandardDirectory Id="DesktopFolder" />
+    <StandardDirectory Id="CommonAppDataFolder">
+      <Directory Id="DATAFOLDER" Name="ProductExpiryAlertSystem" />
+    </StandardDirectory>
+
+    <!-- ===== Program files ===== -->
+    <ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER">
+      <Component Id="MainExecutable">
+        <File Id="MainExe" Source="$(AppDir)\PRODUCT EXPIRY ALERT MANAGEMENT SYSTEM.exe" KeyPath="yes" />
+      </Component>
+      <!-- every other file the program needs (SQLite engine, libraries, config) -->
+      <Files Include="$(AppDir)\**">
+        <Exclude Files="$(AppDir)\PRODUCT EXPIRY ALERT MANAGEMENT SYSTEM.exe" />
+        <Exclude Files="$(AppDir)\**\*.pdb" />
+        <Exclude Files="$(AppDir)\**\*.db" />
+        <Exclude Files="$(AppDir)\**\*.db-*" />
+      </Files>
+      <Component Id="UserGuide">
+        <File Id="UserGuideFile" Source="$(AssetsDir)\User Guide.txt" Name="User Guide.txt" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- ===== Shared data folder (database). Permanent = kept when uninstalling ===== -->
+    <Component Id="DataFolderComponent" Directory="DATAFOLDER" Guid="D175D2F1-3072-41DE-A22B-0E268AD9CDE7" Permanent="yes">
+      <CreateFolder>
+        <!-- Full control for Users (BU), Administrators (BA) and SYSTEM (SY); inherited by the .db file -->
+        <PermissionEx Sddl="D:(A;OICI;FA;;;BU)(A;OICI;FA;;;BA)(A;OICI;FA;;;SY)" />
+      </CreateFolder>
+      <RegistryValue Root="HKLM" Key="Software\ProductExpiryAlertSystem" Name="DataFolder" Type="string" Value="[DATAFOLDER]" KeyPath="yes" />
+    </Component>
+
+    <!-- ===== Shortcuts ===== -->
+    <Component Id="StartMenuShortcuts" Directory="AppMenuFolder" Guid="3908E7EB-34D4-41E1-9140-E3D26FE1A87B">
+      <Shortcut Id="StartMenuApp" Name="Product Expiry Alert Management System"
+                Description="Track product expiry dates and get alerts"
+                Target="[#MainExe]" WorkingDirectory="INSTALLFOLDER" Icon="AppIcon" />
+      <Shortcut Id="StartMenuGuide" Name="User Guide" Target="[#UserGuideFile]" WorkingDirectory="INSTALLFOLDER" />
+      <Shortcut Id="StartMenuUninstall" Name="Uninstall Product Expiry Alert System"
+                Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]" />
+      <RemoveFolder Id="RemoveAppMenuFolder" On="uninstall" />
+      <RegistryValue Root="HKCU" Key="Software\ProductExpiryAlertSystem" Name="StartMenuShortcuts" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+
+    <Component Id="DesktopShortcut" Directory="DesktopFolder">
+      <Shortcut Id="DesktopApp" Name="Product Expiry Alert System"
+                Description="Track product expiry dates and get alerts"
+                Target="[#MainExe]" WorkingDirectory="INSTALLFOLDER" Icon="AppIcon" />
+      <RegistryValue Root="HKCU" Key="Software\ProductExpiryAlertSystem" Name="DesktopShortcut" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+
+    <Feature Id="Main" Title="Product Expiry Alert Management System" Level="1">
+      <ComponentGroupRef Id="AppFiles" />
+      <ComponentRef Id="DataFolderComponent" />
+      <ComponentRef Id="StartMenuShortcuts" />
+      <ComponentRef Id="DesktopShortcut" />
+    </Feature>
+
+    <!-- ===== Setup wizard screens: Welcome > Licence > Install folder > Install > Finish ===== -->
+    <WixVariable Id="WixUILicenseRtf" Value="$(AssetsDir)\License.rtf" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Start Product Expiry Alert Management System now" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
+    <Property Id="WixShellExecTarget" Value="[#MainExe]" />
+    <CustomAction Id="LaunchApplication" BinaryRef="Wix4UtilCA_X64" DllEntry="WixShellExec" Impersonate="yes" />
+
+    <UI>
+      <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
+      <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication"
+               Condition="WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed" />
+    </UI>
+  </Package>
+</Wix>

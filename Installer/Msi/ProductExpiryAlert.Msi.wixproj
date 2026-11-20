@@ -1,0 +1,24 @@
+<Project Sdk="WixToolset.Sdk/5.0.2">
+
+  <!--
+    Builds the Windows Installer package (.msi) for the application.
+    WiX Toolset is downloaded automatically from NuGet, so nothing needs to be installed.
+    Do not build this directly; run build-installer.bat in the main folder instead.
+  -->
+
+  <PropertyGroup>
+    <ProductVersion Condition="'$(ProductVersion)' == ''">1.0.0</ProductVersion>
+    <AppDir Condition="'$(AppDir)' == ''">$(MSBuildThisFileDirectory)..\..\PRODUCT EXPIRY ALERT MANAGEMENT SYSTEM\bin\Release\net472</AppDir>
+    <OutputName>ProductExpiryAlertSystem-$(ProductVersion)</OutputName>
+    <InstallerPlatform>x64</InstallerPlatform>
+    <DefineConstants>AppDir=$(AppDir);ProductVersion=$(ProductVersion);AssetsDir=$(MSBuildThisFileDirectory)..\Assets;IconFile=$(MSBuildThisFileDirectory)..\..\PRODUCT EXPIRY ALERT MANAGEMENT SYSTEM\app.ico</DefineConstants>
+    <!-- ICE69: shortcuts point to files in another component of the SAME feature - safe here. -->
+    <SuppressIces>ICE61;ICE69</SuppressIces>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.UI.wixext" Version="5.0.2" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="5.0.2" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,24 @@
+<Project Sdk="WixToolset.Sdk/5.0.2">
+
+  <!--
+    Builds Setup.exe: a small "bootstrapper" that
+      1. installs Microsoft .NET Framework 4.8 if the PC does not already have it (downloaded from Microsoft), then
+      2. installs the application's .msi package.
+    Run build-installer.bat in the main folder instead of building this directly.
+  -->
+
+  <PropertyGroup>
+    <OutputType>Bundle</OutputType>
+    <ProductVersion Condition="'$(ProductVersion)' == ''">1.0.0</ProductVersion>
+    <MsiFile Condition="'$(MsiFile)' == ''">$(MSBuildThisFileDirectory)..\Msi\bin\x64\Release\en-US\ProductExpiryAlertSystem-$(ProductVersion).msi</MsiFile>
+    <OutputName>ProductExpiryAlertSystem-Setup-$(ProductVersion)</OutputName>
+    <InstallerPlatform>x64</InstallerPlatform>
+    <DefineConstants>MsiFile=$(MsiFile);ProductVersion=$(ProductVersion);AssetsDir=$(MSBuildThisFileDirectory)..\Assets;IconFile=$(MSBuildThisFileDirectory)..\..\PRODUCT EXPIRY ALERT MANAGEMENT SYSTEM\app.ico</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Bal.wixext" Version="5.0.2" />
+    <PackageReference Include="WixToolset.Netfx.wixext" Version="5.0.2" />
+  </ItemGroup>
+
+</Project>

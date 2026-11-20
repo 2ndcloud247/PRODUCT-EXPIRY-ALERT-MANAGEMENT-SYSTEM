@@ -8,8 +8,11 @@ namespace ExpiryAlertSystem.Data
     /// <summary>
     /// Everything about the SQLite database lives here.
     ///
-    /// SQLite stores the whole database in ONE file ("expiry_alert.db") that sits in the
-    /// same folder as the program (.exe). There is no database server to install.
+    /// SQLite stores the whole database in ONE file ("expiry_alert.db"). There is no database
+    /// server to install. The file is kept in a shared data folder:
+    ///     C:\ProgramData\ProductExpiryAlertSystem\expiry_alert.db
+    /// (the program itself is installed in "Program Files", which normal users cannot write to,
+    /// so the data must live somewhere else). Every Windows user on the PC shares the same data.
     /// You can open the file with the free tool "DB Browser for SQLite" to look at the tables.
     ///
     /// Tables used by the system:
@@ -25,8 +28,25 @@ namespace ExpiryAlertSystem.Data
     {
         public const string FileName = "expiry_alert.db";
 
-        public static string FilePath =>
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, FileName);
+        public const string DataFolderName = "ProductExpiryAlertSystem";
+
+        /// <summary>C:\ProgramData\ProductExpiryAlertSystem</summary>
+        public static string DataFolder =>
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), DataFolderName);
+
+        public static string FilePath => Path.Combine(DataFolder, FileName);
+
+        /// <summary>
+        /// Creates the data folder if needed. If an older version kept the database next to the
+        /// .exe, that file is copied across once so no data is lost.
+        /// </summary>
+        private static void PrepareDataFolder()
+        {
+            Directory.CreateDirectory(DataFolder);
+            var oldFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, FileName);
+            if (!File.Exists(FilePath) && File.Exists(oldFile))
+                File.Copy(oldFile, FilePath);
+        }
 
         private static string ConnectionString =>
             new SqliteConnectionStringBuilder { DataSource = FilePath, ForeignKeys = true }.ToString();
@@ -42,6 +62,7 @@ namespace ExpiryAlertSystem.Data
         /// <summary>Called once when the program starts.</summary>
         public static void Initialize()
         {
+            PrepareDataFolder();
             bool firstRun = !File.Exists(FilePath);
 
             using (var con = Open())

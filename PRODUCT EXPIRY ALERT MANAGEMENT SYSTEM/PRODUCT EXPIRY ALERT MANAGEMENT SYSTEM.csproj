@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    PRODUCT EXPIRY ALERT MANAGEMENT SYSTEM
+    Desktop application (Windows Forms) built on .NET Framework 4.7.2.
+    Database: SQLite (a single file, "expiry_alert.db", created automatically).
+  -->
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>ExpiryAlertSystem</RootNamespace>
+    <AssemblyName>PRODUCT EXPIRY ALERT MANAGEMENT SYSTEM</AssemblyName>
+    <AssemblyTitle>Product Expiry Alert Management System</AssemblyTitle>
+    <Product>Product Expiry Alert Management System</Product>
+    <Company>Ignatius Ajuru University of Education</Company>
+    <Authors>Iderima Lawrentta Onosedeba</Authors>
+    <Copyright>Iderima Lawrentta Onosedeba (IAUE/2025/PGD/0029)</Copyright>
+    <Version>1.0.0</Version>
+    <PlatformTarget>x64</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- SQLite database driver -->
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.11" />
+    <!-- Lets the project build even if the .NET Framework 4.7.2 developer pack is not installed -->
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+
+</Project>
